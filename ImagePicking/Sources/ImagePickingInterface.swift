@@ -21,7 +21,7 @@ public protocol ImagePickingInterface: AppSettingsShowingInterface {
     
 }
 
-extension ImagePickingInterface where Self: UIViewController {
+public extension ImagePickingInterface where Self: UIViewController {
     
     var delegate: (UIImagePickerControllerDelegate&UINavigationControllerDelegate)? {
         return self as? (UIImagePickerControllerDelegate & UINavigationControllerDelegate)
