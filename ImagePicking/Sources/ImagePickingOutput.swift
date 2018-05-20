@@ -24,6 +24,7 @@ public protocol ImagePicking: AppSettingsShowing {
     
     var imagePickingInterface: ImagePickingInterface? { get }
     
+    var prefferedStyle: UIAlertControllerStyle { get }
     var cameraActionTitle: String? { get }
     var libraryActionTitle: String? { get }
     var cancelActionTitle: String? { get }
@@ -35,9 +36,13 @@ public protocol ImagePicking: AppSettingsShowing {
                          appSettingsShowingCompletion: ((Bool) -> Void)?)
 }
 
-extension ImagePicking where Self: NSObject {
+public extension ImagePicking where Self: NSObject {
     
-    public func showImagePickerAlert(presentingCompletion: (() -> Void)? = nil, appSettingsShowingCompletion: ((Bool) -> Void)? = nil) {
+    var appSettingsShowingInterface: AppSettingsShowingInterface? {
+        return imagePickingInterface
+    }
+    
+    func showImagePickerAlert(presentingCompletion: (() -> Void)? = nil, appSettingsShowingCompletion: ((Bool) -> Void)? = nil) {
         let cameraActionConfig = AlertActionConfig(title: cameraActionTitle, style: .default) { [weak self] (_) in
             self?.checkCameraPermissions(presentingCompletion: presentingCompletion,
                                          appSettingsShowingCompletion: appSettingsShowingCompletion)
@@ -49,11 +54,11 @@ extension ImagePicking where Self: NSObject {
         let cancelActionConfig = AlertActionConfig(title: cancelActionTitle, style: .cancel)
         imagePickingInterface?.showAlertController(with: alertTitle, message: alertMessage,
                                                    actionsConfiguration: [cameraActionConfig, libraryActionConfig, cancelActionConfig],
-                                                   preferredStyle: .actionSheet,
+                                                   preferredStyle: prefferedStyle,
                                                    completion: presentingCompletion)
     }
 
-    public func showImagePicker(with sourceType: UIImagePickerControllerSourceType, presentingCompletion: (() -> Void)? = nil,
+    func showImagePicker(with sourceType: UIImagePickerControllerSourceType, presentingCompletion: (() -> Void)? = nil,
                                 appSettingsShowingCompletion: ((Bool) -> Void)? = nil) {
         switch sourceType {
         case .camera:
@@ -64,10 +69,6 @@ extension ImagePicking where Self: NSObject {
     }
     
     // MARK: - Private -
-    
-    private var appSettingsShowingInterface: AppSettingsShowingInterface? {
-        return imagePickingInterface
-    }
 
     private func showImagePicker(with sourceType: UIImagePickerControllerSourceType, completion: (() -> Void)?) {
         imagePickingInterface?.showImagePicker(with: sourceType, completion: completion)
@@ -113,7 +114,7 @@ extension ImagePicking where Self: NSObject {
 public protocol ImagePickingOutput {
 
     func viewTriggeredCallImagePickerEvent()
-    func viewTriggedImageSelectionEvent(with info: [String : Any])
+    func viewTriggedImageSelectionEvent(with info: [String: Any])
     
 }
 

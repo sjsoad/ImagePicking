@@ -29,7 +29,6 @@ public extension ImagePickingInterface where Self: UIViewController {
     
     var imagePickerController: UIImagePickerController {
         let imagePicker = UIImagePickerController()
-        imagePicker.allowsEditing = true
         imagePicker.delegate = delegate
         return imagePicker
     }
