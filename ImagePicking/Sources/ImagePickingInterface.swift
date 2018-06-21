@@ -11,17 +11,15 @@ import Foundation
 import SKAlertControllerShowing
 import SKAppSettingsShowing
 
-// Extend your Interface protocol with this protocol
-
-public protocol ImagePickingInterface: AppSettingsShowingInterface {
-
+// Extend your ViewController with this protocol
+public protocol ImagePickingConfigurating {
+    
     var delegate: (UIImagePickerControllerDelegate&UINavigationControllerDelegate)? { get }
     var imagePickerController: UIImagePickerController { get }
-    func showImagePicker(with sourceType: UIImagePickerControllerSourceType, completion: (() -> Void)?)
     
 }
 
-public extension ImagePickingInterface where Self: UIViewController {
+public extension ImagePickingConfigurating where Self: UIViewController {
     
     var delegate: (UIImagePickerControllerDelegate&UINavigationControllerDelegate)? {
         return self as? (UIImagePickerControllerDelegate & UINavigationControllerDelegate)
@@ -32,6 +30,18 @@ public extension ImagePickingInterface where Self: UIViewController {
         imagePicker.delegate = delegate
         return imagePicker
     }
+    
+}
+
+// Extend your Interface protocol with this protocol
+public protocol ImagePickingInterface: AppSettingsShowingInterface {
+
+
+    func showImagePicker(with sourceType: UIImagePickerControllerSourceType, completion: (() -> Void)?)
+    
+}
+
+public extension ImagePickingInterface where Self: UIViewController&ImagePickingConfigurating {
     
     func showImagePicker(with sourceType: UIImagePickerControllerSourceType, completion: (() -> Void)? = nil) {
         imagePickerController.sourceType = UIImagePickerController.isSourceTypeAvailable(sourceType) ? sourceType : .photoLibrary
