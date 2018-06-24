@@ -13,6 +13,7 @@ import Photos
 import SKCameraPermissions
 import SKPhotosPermissions
 import AlertActionBuilder
+import SKAlertControllerShowing
 import SKAppSettingsShowing
 
 // Extend your Presenter with this protocol
@@ -23,11 +24,15 @@ public protocol ImagePicking: AppSettingsShowing {
     
     var imagePickingInterface: ImagePickingInterface? { get }
     
-    func showImagePickerAlert(imagePickerAlertSettings: ImagePickerAlertSettingsProviding, cameraAppSettingsAlert: AppSettingsAlertStringsProviding,
-                              cameraRollAppSettingsAlert: AppSettingsAlertStringsProviding, presentingCompletion: (() -> Void)?,
-                              appSettingsShowingCompletion: ((Bool) -> Void)?)
-    func showImagePicker(with stringsProvider: AppSettingsAlertStringsProviding, sourceType: UIImagePickerControllerSourceType,
-                         presentingCompletion: (() -> Void)?, appSettingsShowingCompletion: ((Bool) -> Void)?)
+    func showImagePickerAlert(imagePickerAlertSettings: ImagePickerAlertSettingsProviding, presentingCompletion: (() -> Void)?,
+                              popoveConfigurationHandler: PopoveConfigurationHandler?,
+                              actionCompletion: @escaping ((UIImagePickerControllerSourceType) -> Void))
+    func checkCameraPermissions(with stringsProvider: AppSettingsAlertStringsProviding, presentingCompletion: (() -> Void)?,
+                                appSettingsShowingCompletion: ((Bool) -> Void)?, authorizedCompletion: @escaping (() -> Void))
+    func checkCameraRollPermissions(with stringsProvider: AppSettingsAlertStringsProviding, presentingCompletion: (() -> Void)?,
+                                    appSettingsShowingCompletion: ((Bool) -> Void)?, authorizedCompletion: @escaping (() -> Void))
+    func showImagePicker(with sourceType: UIImagePickerControllerSourceType, imagePickerProvider: ImagePickerProviding,
+                         presentationCompletion: (() -> Void)?)
 }
 
 public extension ImagePicking where Self: NSObject {
@@ -36,56 +41,55 @@ public extension ImagePicking where Self: NSObject {
         return imagePickingInterface
     }
     
-    func showImagePickerAlert(imagePickerAlertSettings: ImagePickerAlertSettingsProviding, cameraAppSettingsAlert: AppSettingsAlertStringsProviding,
-                              cameraRollAppSettingsAlert: AppSettingsAlertStringsProviding, presentingCompletion: (() -> Void)? = nil,
-                              appSettingsShowingCompletion: ((Bool) -> Void)? = nil) {
-        let cameraActionConfig = AlertActionConfig(title: imagePickerAlertSettings.cameraActionTitle, style: .default) { [weak self] (_) in
-            self?.checkCameraPermissions(with: cameraAppSettingsAlert, presentingCompletion: presentingCompletion,
-                                         appSettingsShowingCompletion: appSettingsShowingCompletion)
+    func showImagePickerAlert(imagePickerAlertSettings: ImagePickerAlertSettingsProviding, presentingCompletion: (() -> Void)? = nil,
+                              popoveConfigurationHandler: PopoveConfigurationHandler? = nil,
+                              actionCompletion: @escaping ((UIImagePickerControllerSourceType) -> Void)) {
+        let cameraActionConfig = AlertActionConfig(title: imagePickerAlertSettings.cameraActionTitle, style: .default) { (_) in
+            actionCompletion(.camera)
         }
-        let libraryActionConfig = AlertActionConfig(title: imagePickerAlertSettings.libraryActionTitle, style: .default) { [weak self] (_) in
-            self?.checkCameraRollPermissions(with: cameraRollAppSettingsAlert, presentingCompletion: presentingCompletion,
-                                             appSettingsShowingCompletion: appSettingsShowingCompletion)
+        let libraryActionConfig = AlertActionConfig(title: imagePickerAlertSettings.libraryActionTitle, style: .default) { (_) in
+            actionCompletion(.photoLibrary)
         }
         let cancelActionConfig = AlertActionConfig(title: imagePickerAlertSettings.cancelActionTitle, style: .cancel)
         imagePickingInterface?.showAlertController(with: imagePickerAlertSettings.alertTitle, message: imagePickerAlertSettings.alertMessage,
                                                    actionsConfiguration: [cameraActionConfig, libraryActionConfig, cancelActionConfig],
                                                    preferredStyle: imagePickerAlertSettings.prefferedStyle,
-                                                   completion: presentingCompletion)
-    }
+                                                   completion: presentingCompletion, popoveConfigurationHandler: popoveConfigurationHandler)
 
-    func showImagePicker(with stringsProvider: AppSettingsAlertStringsProviding, sourceType: UIImagePickerControllerSourceType,
-                         presentingCompletion: (() -> Void)? = nil, appSettingsShowingCompletion: ((Bool) -> Void)? = nil) {
-        switch sourceType {
-        case .camera:
-            checkCameraPermissions(with: stringsProvider, presentingCompletion: presentingCompletion,
-                                   appSettingsShowingCompletion: appSettingsShowingCompletion)
-        case .photoLibrary:
-            checkCameraRollPermissions(with: stringsProvider, presentingCompletion: presentingCompletion,
-                                       appSettingsShowingCompletion: appSettingsShowingCompletion)
-        default:
-            print("\(sourceType) not implemented")
-        }
     }
     
-    // MARK: - Private -
-
-    private func showImagePicker(with sourceType: UIImagePickerControllerSourceType, completion: (() -> Void)?) {
-        imagePickingInterface?.showImagePicker(with: sourceType, completion: completion)
-    }
-
-    private func checkCameraPermissions(with stringsProvider: AppSettingsAlertStringsProviding, presentingCompletion: (() -> Void)?,
-                                        appSettingsShowingCompletion: ((Bool) -> Void)?) {
+    func checkCameraPermissions(with stringsProvider: AppSettingsAlertStringsProviding, presentingCompletion: (() -> Void)? = nil,
+                                appSettingsShowingCompletion: ((Bool) -> Void)? = nil, authorizedCompletion: @escaping (() -> Void)) {
         guard let cameraPermissions = cameraPermissions else { return }
         let state: AVAuthorizationStatus = cameraPermissions.permissionsState()
         if state == .notDetermined {
             cameraPermissions.requestPermissions(handler: { [weak self] (_) in
                 self?.checkCameraPermissions(with: stringsProvider, presentingCompletion: presentingCompletion,
-                                             appSettingsShowingCompletion: appSettingsShowingCompletion)
+                                             appSettingsShowingCompletion: appSettingsShowingCompletion, authorizedCompletion: authorizedCompletion)
             })
         }
         if state == .authorized {
-            showImagePicker(with: .camera, completion: presentingCompletion)
+            authorizedCompletion()
+        }
+        if state == .denied {
+            showAppSettingsAlert(with: stringsProvider, alertPresentingCompletion: presentingCompletion,
+                                 appSettingsShowingCompletion: appSettingsShowingCompletion)
+        }
+    }
+    
+    func checkCameraRollPermissions(with stringsProvider: AppSettingsAlertStringsProviding, presentingCompletion: (() -> Void)? = nil,
+                                    appSettingsShowingCompletion: ((Bool) -> Void)? = nil, authorizedCompletion: @escaping (() -> Void)) {
+        guard let photoLibraryPermissions = photoLibraryPermissions else { return }
+        let state: PHAuthorizationStatus = photoLibraryPermissions.permissionsState()
+        if state == .notDetermined {
+            photoLibraryPermissions.requestPermissions(handler: { [weak self] (_) in
+                self?.checkCameraRollPermissions(with: stringsProvider, presentingCompletion: presentingCompletion,
+                                                 appSettingsShowingCompletion: appSettingsShowingCompletion,
+                                                 authorizedCompletion: authorizedCompletion)
+            })
+        }
+        if state == .authorized {
+            authorizedCompletion()
         }
         if state == .denied {
             showAppSettingsAlert(with: stringsProvider, alertPresentingCompletion: presentingCompletion,
@@ -93,23 +97,9 @@ public extension ImagePicking where Self: NSObject {
         }
     }
 
-    private func checkCameraRollPermissions(with stringsProvider: AppSettingsAlertStringsProviding, presentingCompletion: (() -> Void)?,
-                                            appSettingsShowingCompletion: ((Bool) -> Void)?) {
-        guard let photoLibraryPermissions = photoLibraryPermissions else { return }
-        let state: PHAuthorizationStatus = photoLibraryPermissions.permissionsState()
-        if state == .notDetermined {
-            photoLibraryPermissions.requestPermissions(handler: { [weak self] (_) in
-                self?.checkCameraRollPermissions(with: stringsProvider, presentingCompletion: presentingCompletion,
-                                                 appSettingsShowingCompletion: appSettingsShowingCompletion)
-            })
-        }
-        if state == .authorized {
-            showImagePicker(with: .photoLibrary, completion: presentingCompletion)
-        }
-        if state == .denied {
-            showAppSettingsAlert(with: stringsProvider, alertPresentingCompletion: presentingCompletion,
-                                 appSettingsShowingCompletion: appSettingsShowingCompletion)
-        }
+    func showImagePicker(with sourceType: UIImagePickerControllerSourceType, imagePickerProvider: ImagePickerProviding = DefaultImagePickerProvider(),
+                         presentationCompletion: (() -> Void)? = nil) {
+        imagePickingInterface?.showImagePicker(with: sourceType, imagePickerProvider: imagePickerProvider, completion: presentationCompletion)
     }
     
 }
@@ -117,7 +107,7 @@ public extension ImagePicking where Self: NSObject {
 // Extend your Output protocol with this protocol
 public protocol ImagePickingOutput {
 
-    func viewTriggeredCallImagePickerEvent()
+    func viewTriggeredShowImagePickerAlert()
     func viewTriggedImageSelectionEvent(with info: [String: Any])
     
 }

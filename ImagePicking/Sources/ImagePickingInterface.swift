@@ -11,41 +11,22 @@ import Foundation
 import SKAlertControllerShowing
 import SKAppSettingsShowing
 
-// Extend your ViewController with this protocol
-public protocol ImagePickingConfigurating {
-    
-    var delegate: (UIImagePickerControllerDelegate&UINavigationControllerDelegate)? { get }
-    var imagePickerController: UIImagePickerController { get }
-    
-}
-
-public extension ImagePickingConfigurating where Self: UIViewController {
-    
-    var delegate: (UIImagePickerControllerDelegate&UINavigationControllerDelegate)? {
-        return self as? (UIImagePickerControllerDelegate & UINavigationControllerDelegate)
-    }
-    
-    var imagePickerController: UIImagePickerController {
-        let imagePicker = UIImagePickerController()
-        imagePicker.delegate = delegate
-        return imagePicker
-    }
-    
-}
-
 // Extend your Interface protocol with this protocol
 public protocol ImagePickingInterface: AppSettingsShowingInterface {
 
 
-    func showImagePicker(with sourceType: UIImagePickerControllerSourceType, completion: (() -> Void)?)
+    func showImagePicker(with sourceType: UIImagePickerControllerSourceType, imagePickerProvider: ImagePickerProviding, completion: (() -> Void)?)
     
 }
 
-public extension ImagePickingInterface where Self: UIViewController&ImagePickingConfigurating {
+public extension ImagePickingInterface where Self: UIViewController&UINavigationControllerDelegate&UIImagePickerControllerDelegate {
     
-    func showImagePicker(with sourceType: UIImagePickerControllerSourceType, completion: (() -> Void)? = nil) {
-        imagePickerController.sourceType = UIImagePickerController.isSourceTypeAvailable(sourceType) ? sourceType : .photoLibrary
-        present(imagePickerController, animated: true, completion: completion)
+    func showImagePicker(with sourceType: UIImagePickerControllerSourceType, imagePickerProvider: ImagePickerProviding,
+                         completion: (() -> Void)? = nil) {
+        let imagePicker = imagePickerProvider.imagePicker
+        imagePicker.delegate = self
+        imagePicker.sourceType = UIImagePickerController.isSourceTypeAvailable(sourceType) ? sourceType : .photoLibrary
+        present(imagePicker, animated: true, completion: completion)
     }
     
 }
