@@ -35,7 +35,7 @@ public protocol ImagePicking: AppSettingsShowing {
                          presentationCompletion: (() -> Void)?)
 }
 
-public extension ImagePicking where Self: NSObject {
+public extension ImagePicking {
     
     var appSettingsShowingInterface: AppSettingsShowingInterface? {
         return imagePickingInterface

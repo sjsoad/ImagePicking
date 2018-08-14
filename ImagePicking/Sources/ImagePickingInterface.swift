@@ -19,7 +19,7 @@ public protocol ImagePickingInterface: AppSettingsShowingInterface {
     
 }
 
-public extension ImagePickingInterface where Self: UIViewController&UINavigationControllerDelegate&UIImagePickerControllerDelegate {
+public extension ImagePickingInterface where Self: UINavigationControllerDelegate&UIImagePickerControllerDelegate {
     
     func showImagePicker(with sourceType: UIImagePickerControllerSourceType, imagePickerProvider: ImagePickerProviding,
                          completion: (() -> Void)? = nil) {
