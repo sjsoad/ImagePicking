@@ -21,12 +21,12 @@ public protocol ImagePickerAlertSettingsProviding {
 
 open class ImagePickerAlertSettings: ImagePickerAlertSettingsProviding {
     
-    public private(set) var prefferedStyle: UIAlertControllerStyle
-    public private(set) var alertTitle: String?
-    public private(set) var alertMessage: String?
-    public private(set) var cameraActionTitle: String
-    public private(set) var libraryActionTitle: String
-    public private(set) var cancelActionTitle: String
+    public let prefferedStyle: UIAlertControllerStyle
+    public let alertTitle: String?
+    public let alertMessage: String?
+    public let cameraActionTitle: String
+    public let libraryActionTitle: String
+    public let cancelActionTitle: String
     
     public required init(prefferedStyle: UIAlertControllerStyle, alertTitle: String? = nil, alertMessage: String? = nil,
                          cameraActionTitle: String, libraryActionTitle: String, cancelActionTitle: String) {
