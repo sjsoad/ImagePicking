@@ -14,7 +14,7 @@ public protocol ImagePickerProviding {
     
 }
 
-open class DefaultImagePickerProvider: ImagePickerProviding {
+public struct DefaultImagePickerProvider: ImagePickerProviding {
     
     private var allowEditing: Bool
     

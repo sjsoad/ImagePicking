@@ -14,7 +14,6 @@ import SKAppSettingsShowing
 // Extend your Interface protocol with this protocol
 public protocol ImagePickingInterface: AppSettingsShowingInterface {
 
-
     func showImagePicker(with sourceType: UIImagePickerControllerSourceType, imagePickerProvider: ImagePickerProviding, completion: (() -> Void)?)
     
 }
