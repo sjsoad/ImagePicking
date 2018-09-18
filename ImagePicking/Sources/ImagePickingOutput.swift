@@ -26,12 +26,12 @@ public protocol ImagePicking: AppSettingsShowing {
     
     func showImagePickerAlert(imagePickerAlertSettings: ImagePickerAlertSettingsProviding, presentingCompletion: (() -> Void)?,
                               popoveConfigurationHandler: PopoveConfigurationHandler?,
-                              actionCompletion: @escaping ((UIImagePickerControllerSourceType) -> Void))
+                              actionCompletion: @escaping ((UIImagePickerController.SourceType) -> Void))
     func checkCameraPermissions(with stringsProvider: AppSettingsAlertStringsProviding, presentingCompletion: (() -> Void)?,
                                 appSettingsShowingCompletion: ((Bool) -> Void)?, authorizedCompletion: @escaping (() -> Void))
     func checkCameraRollPermissions(with stringsProvider: AppSettingsAlertStringsProviding, presentingCompletion: (() -> Void)?,
                                     appSettingsShowingCompletion: ((Bool) -> Void)?, authorizedCompletion: @escaping (() -> Void))
-    func showImagePicker(with sourceType: UIImagePickerControllerSourceType, imagePickerProvider: ImagePickerProviding,
+    func showImagePicker(with sourceType: UIImagePickerController.SourceType, imagePickerProvider: ImagePickerProviding,
                          presentationCompletion: (() -> Void)?)
 }
 
@@ -43,7 +43,7 @@ public extension ImagePicking where Self: NSObject {
     
     func showImagePickerAlert(imagePickerAlertSettings: ImagePickerAlertSettingsProviding, presentingCompletion: (() -> Void)? = nil,
                               popoveConfigurationHandler: PopoveConfigurationHandler? = nil,
-                              actionCompletion: @escaping ((UIImagePickerControllerSourceType) -> Void)) {
+                              actionCompletion: @escaping ((UIImagePickerController.SourceType) -> Void)) {
         let cameraActionConfig = AlertActionConfig(title: imagePickerAlertSettings.cameraActionTitle, style: .default) { (_) in
             actionCompletion(.camera)
         }
@@ -97,7 +97,7 @@ public extension ImagePicking where Self: NSObject {
         }
     }
 
-    func showImagePicker(with sourceType: UIImagePickerControllerSourceType, imagePickerProvider: ImagePickerProviding = DefaultImagePickerProvider(),
+    func showImagePicker(with sourceType: UIImagePickerController.SourceType, imagePickerProvider: ImagePickerProviding = DefaultImagePickerProvider(),
                          presentationCompletion: (() -> Void)? = nil) {
         imagePickingInterface?.showImagePicker(with: sourceType, imagePickerProvider: imagePickerProvider, completion: presentationCompletion)
     }
@@ -108,7 +108,7 @@ public extension ImagePicking where Self: NSObject {
 public protocol ImagePickingOutput {
 
     func viewTriggeredShowImagePickerAlert()
-    func viewTriggedImageSelectionEvent(with info: [String: Any])
+    func viewTriggedImageSelectionEvent(with info: [UIImagePickerController.InfoKey: Any])
     
 }
 

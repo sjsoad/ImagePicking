@@ -14,13 +14,13 @@ import SKAppSettingsShowing
 // Extend your Interface protocol with this protocol
 public protocol ImagePickingInterface: AppSettingsShowingInterface {
 
-    func showImagePicker(with sourceType: UIImagePickerControllerSourceType, imagePickerProvider: ImagePickerProviding, completion: (() -> Void)?)
+    func showImagePicker(with sourceType: UIImagePickerController.SourceType, imagePickerProvider: ImagePickerProviding, completion: (() -> Void)?)
     
 }
 
 public extension ImagePickingInterface where Self: UIViewController&UINavigationControllerDelegate&UIImagePickerControllerDelegate {
     
-    func showImagePicker(with sourceType: UIImagePickerControllerSourceType, imagePickerProvider: ImagePickerProviding,
+    func showImagePicker(with sourceType: UIImagePickerController.SourceType, imagePickerProvider: ImagePickerProviding,
                          completion: (() -> Void)? = nil) {
         let imagePicker = imagePickerProvider.imagePicker
         imagePicker.delegate = self

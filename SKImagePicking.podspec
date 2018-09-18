@@ -9,7 +9,7 @@ s.summary = "ImagePicking allows you to pick image from Library or Camera very e
 s.requires_arc = true
 
 # 2
-s.version = "0.0.8"
+s.version = "0.0.9"
 
 # 3
 s.license = { :type => "MIT", :file => "LICENSE" }
