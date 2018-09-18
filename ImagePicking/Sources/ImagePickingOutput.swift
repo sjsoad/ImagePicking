@@ -111,4 +111,3 @@ public protocol ImagePickingOutput {
     func viewTriggedImageSelectionEvent(with info: [UIImagePickerController.InfoKey: Any])
     
 }
-
