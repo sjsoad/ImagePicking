@@ -6,7 +6,6 @@
 //  Copyright © 2018 Sergey. All rights reserved.
 //
 
-import UIKit
 import Foundation
 import AVFoundation
 import Photos
@@ -108,6 +107,6 @@ public extension ImagePicking where Self: NSObject {
 public protocol ImagePickingOutput {
 
     func viewTriggeredShowImagePickerAlert()
-    func viewTriggedImageSelectionEvent(with info: [UIImagePickerController.InfoKey: Any])
+    func viewTriggedImageSelectionEvent(with info: [String: Any])
     
 }

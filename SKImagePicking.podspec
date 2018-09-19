@@ -2,14 +2,14 @@ Pod::Spec.new do |s|
 
 # 1
 s.platform = :ios
-s.swift_version = '4.0'
+s.swift_version = '4.2'
 s.ios.deployment_target = '10.0'
 s.name = "SKImagePicking"
 s.summary = "ImagePicking allows you to pick image from Library or Camera very easy"
 s.requires_arc = true
 
 # 2
-s.version = "0.1.0"
+s.version = "0.1.1"
 
 # 3
 s.license = { :type => "MIT", :file => "LICENSE" }
