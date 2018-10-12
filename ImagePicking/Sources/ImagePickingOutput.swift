@@ -107,6 +107,6 @@ public extension ImagePicking where Self: NSObject {
 public protocol ImagePickingOutput {
 
     func viewTriggeredShowImagePickerAlert()
-    func viewTriggedImageSelectionEvent(with info: [String: Any])
+    func viewTriggedImageSelectionEvent(with info: [UIImagePickerController.InfoKey: Any])
     
 }

@@ -10,6 +10,7 @@
 		A5600004208E4AB40015DBE1 /* ImagePicking.h in Headers */ = {isa = PBXBuildFile; fileRef = A5600002208E4AB40015DBE1 /* ImagePicking.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A560000F208E4AF60015DBE1 /* ImagePickingOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = A560000B208E4AF60015DBE1 /* ImagePickingOutput.swift */; };
 		A5600010208E4AF60015DBE1 /* ImagePickingInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = A560000C208E4AF60015DBE1 /* ImagePickingInterface.swift */; };
+		A570A86421709B0800D4CDCA /* ImagePickerProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = A570A86321709B0800D4CDCA /* ImagePickerProviding.swift */; };
 		A595D21720C02CAB00330556 /* ImagePickerAlertSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A595D21620C02CAB00330556 /* ImagePickerAlertSettings.swift */; };
 /* End PBXBuildFile section */
 
@@ -19,6 +20,7 @@
 		A560000C208E4AF60015DBE1 /* ImagePickingInterface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePickingInterface.swift; sourceTree = "<group>"; };
 		A560000E208E4AF60015DBE1 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A560FFFF208E4AB40015DBE1 /* ImagePicking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ImagePicking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A570A86321709B0800D4CDCA /* ImagePickerProviding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePickerProviding.swift; sourceTree = "<group>"; };
 		A595D21620C02CAB00330556 /* ImagePickerAlertSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerAlertSettings.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -54,6 +56,7 @@
 		A560000A208E4AF60015DBE1 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				A570A86321709B0800D4CDCA /* ImagePickerProviding.swift */,
 				A560000B208E4AF60015DBE1 /* ImagePickingOutput.swift */,
 				A560000C208E4AF60015DBE1 /* ImagePickingInterface.swift */,
 				A595D21620C02CAB00330556 /* ImagePickerAlertSettings.swift */,
@@ -155,6 +158,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A570A86421709B0800D4CDCA /* ImagePickerProviding.swift in Sources */,
 				A560000F208E4AF60015DBE1 /* ImagePickingOutput.swift in Sources */,
 				A595D21720C02CAB00330556 /* ImagePickerAlertSettings.swift in Sources */,
 				A5600010208E4AF60015DBE1 /* ImagePickingInterface.swift in Sources */,
